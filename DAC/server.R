@@ -78,7 +78,7 @@ shinyServer(function(input, output) {
   ## 1D plots ########################################################################################
   output$thresholdScanUncorrected <- renderPlot({ 
     plotThresholdScan(data(), pixelIndex(), input$DAC, input$thresholdRange, input$showLines, input$peaksMode)
-  })
+  }, width=738)
   
   output$pixelDACCharacteristic <- renderPlot({
     plotTrimDACchar(peaks(), pixelIndex())
@@ -95,7 +95,7 @@ shinyServer(function(input, output) {
       drawUncorrectedData(data(), input$DAC, input$thresholdRange, input$showLines, input$pixels)
     else if (input$showMode == "Peak positions")
       drawPeaksPositions(data(), peaks(), input$DAC, input$thresholdRange, input$showLines, input$pixels)
-  })
+  }, height=564)
   ####################################################################################################
   
   

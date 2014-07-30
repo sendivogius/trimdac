@@ -17,7 +17,7 @@ shinyUI(fluidPage(
                                                   "Pixels:",
                                                   min = 0,
                                                   max = 431,
-                                                  value = c(1,100)),
+                                                  value = c(0,431)),
                                       radioButtons("counters", "Counters", c("low", "high"), selected = "low", inline = TRUE),
                                       div(style="display:inline-block;width:45%;margin-right:10px",
                                           numericInput("row",
@@ -31,11 +31,11 @@ shinyUI(fluidPage(
                                                        min = 1,
                                                        max = 18,
                                                        value = 1)),
-                                      sliderInput("thrcorr", "Correct to [mV]: ", min=800, max=1400, value=1200),
+                                      sliderInput("thrcorr", "Correct to [mV]: ", min=00, max=1400, value=1200),
                                       selectInput("showMode", "Show mode", c("Values", "Peak positions", "Bad pixels"), selected = NULL, multiple = FALSE, selectize = TRUE, width = NULL),
                                       selectInput("peaksMode", "Peak detection algorithm", c("Max", "Gauss"), selected = NULL, multiple = FALSE, selectize = TRUE, width = NULL),
                                       checkboxInput("showLines", "Show lines", value=T),
-                                      sliderInput("thresholdRange", "Threshold range", min=800, max=1400, value=c(900,1300)),
+                                      sliderInput("thresholdRange", "Threshold range", min=800, max=1400, value=c(800,1400)),
                                       sliderInput("bins", "Bins of histogram", min=10, max=432, value=50)
                                       
   ),
@@ -79,7 +79,13 @@ shinyUI(fluidPage(
               ), 
               tabPanel("Pixel characteristic",
                        h3(textOutput("thresholdScansHeader")),
-                       plotOutput("thresholdScanUncorrected"),
+                       fluidRow(
+                         column(2),
+                         column(8,
+                                plotOutput("thresholdScanUncorrected")
+                         ),
+                         column(2)
+                       ),
                        h3(textOutput("DACcharacteristicHeader")),
                        plotOutput("pixelDACCharacteristic")             
               ), 
