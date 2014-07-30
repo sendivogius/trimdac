@@ -47,3 +47,29 @@ plotThresholdScan <- function(data, pixelIndex, DAC, range, showLines, peakMode=
       points(x,y, pch='*', col="red") 
   }
 }
+
+plotHistogram <- function(peaks, DAC, bins, showLines)
+{
+  DACindex <- DAC+1
+  data <- peaks[DACindex,]
+  h <- hist(data, 
+       breaks=bins, 
+       col="blue", 
+       xlab="peak position [mV]", 
+       ylab="number", 
+       density=20, 
+       angle=45, 
+       prob=F, 
+       main="",
+       xaxt='n')
+  axis(side=1, at=seq(1000,1400,10), lab=seq(1000,1400,10))
+
+  if(showLines){
+    m <- mean(data,na.rm=T)
+    s <- sqrt(var(data,na.rm=T))
+    mult <- (h$count/h$density)[1]
+    curve(mult*dnorm(x, mean=m, sd=s), col="darkblue", lwd=1,add=T, yaxt='n', to=m-s)
+    curve(mult*dnorm(x, mean=m, sd=s), col="darkblue", lwd=1,add=T, yaxt='n', from=m+s)
+    curve(mult*dnorm(x, mean=m, sd=s), col="green", lwd=2,add=T, yaxt='n', from=m-s, to=m+s)
+  }
+}

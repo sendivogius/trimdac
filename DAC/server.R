@@ -78,11 +78,18 @@ shinyServer(function(input, output) {
   output$pixelDACCharacteristic <- renderPlot({
     plotTrimDACchar(peaks(), pixelIndex())
   })
+  
+    output$uncorrectedHistogram <- renderPlot({
+    plotHistogram(peaks(), input$DAC, input$bins, input$showLines)
+  })
   ####################################################################################################
   
   ## 2D plots ########################################################################################
-  output$thresholdOverviewUncorrected <- renderPlot({ 
-    drawUncorrectedData(data(), input$DAC, input$thresholdRange, input$showLines)
+  output$thresholdOverviewUncorrected <- renderPlot({
+    if(input$showMode == "Values")
+      drawUncorrectedData(data(), input$DAC, input$thresholdRange, input$showLines)
+    else if (input$showMode == "Peak positions")
+      drawPeaksPositions(data(), peaks(), input$DAC, input$thresholdRange, input$showLines)
   })
   ####################################################################################################
   

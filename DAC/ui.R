@@ -27,10 +27,11 @@ shinyUI(fluidPage(
                                                        max = 18,
                                                        value = 1)),
                                       sliderInput("thrcorr", "Correct to [mV]: ", min=800, max=1400, value=1200),
-                                      selectInput("showMode", "Show mode", c("Values", "Peak positions"), selected = NULL, multiple = FALSE, selectize = TRUE, width = NULL),
+                                      selectInput("showMode", "Show mode", c("Values", "Peak positions", "Bad pixels"), selected = NULL, multiple = FALSE, selectize = TRUE, width = NULL),
                                       selectInput("peaksMode", "Peak detection algorithm", c("Max", "Gauss"), selected = NULL, multiple = FALSE, selectize = TRUE, width = NULL),
                                       checkboxInput("showLines", "Show lines", value=T),
-                                      sliderInput("thresholdRange", "Threshold range", min=800, max=1400, value=c(900,1300))
+                                      sliderInput("thresholdRange", "Threshold range", min=800, max=1400, value=c(900,1300)),
+                                      sliderInput("bins", "Bins of histogram", min=10, max=432, value=50)
                                       
   ),
   
@@ -51,8 +52,17 @@ shinyUI(fluidPage(
                          
                        ),
                        hr(),
+                       h3("Histograms"),
+                       fluidRow(
+                         column(6,
+                                plotOutput("uncorrectedHistogram")
+                         ),
+                         column(6,
+                                h4("Corrected")
+                         
+                       ),
                        h3("Summary")
-                       
+                       )        
               ), 
               tabPanel("Pixel characteristic",
                        h3(textOutput("thresholdScansHeader")),
