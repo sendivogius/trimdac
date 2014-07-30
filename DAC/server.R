@@ -9,11 +9,23 @@ source("plots1D.R")
 source("findPeaks.R")
 source("helpers.R")
 
-data_all <- parReadTrimDACs('D:\\TrimDAC scan\\Mod003 - trimDAC Scan - TrimRef -1-2-  Icomp- GND CSA -dis BLR - 0 - GND refDAC - 4u')
+directory <- "data"
+
+data_all <- parReadTrimDACs(directory)
 lowPeaksMax <- findPeaksMax(data_all$low)
 highPeaksMax <- findPeaksMax(data_all$high)
-lowPeaksGauss <-NA
-highPeaksGauss <- NA
+
+peaksFile <- paste(directory, "//peaksGauss.RData", sep="")
+if(file.exists(peaksFile)){
+  peaks <- load(peaksFile)
+  print("readed peaks")
+} else {
+  lowPeaksGauss <- findPeaksGauss(data_all$low)
+  highPeaksGauss <- findPeaksGauss(data_all$high)
+  save(lowPeaksGauss, highPeaksGauss, file=peaksFile)
+  print("calc and saved")
+}
+
 oldpar <- par(mar=c(0,0,0,0))
 
 
@@ -34,12 +46,8 @@ shinyServer(function(input, output) {
   peaks <- reactive({
     if(input$counters == "low"){
       if(input$peaksMode == "Max")
-        lowPeaksMax #precalculated
+        lowPeaksMax
       else{
-        if(is.na(lowPeaksGauss)){
-          print("CALC")
-          lowPeaksGauss <- findPeaksGauss(data_all$low) #lazy loading
-        }
         lowPeaksGauss
       }
     }
@@ -47,10 +55,10 @@ shinyServer(function(input, output) {
       if(input$peaksMode == "Max")
         highPeaksMax #precalculated
       else{
-        if(is.na(highPeaksGauss))
-          highPeaksGauss <- findPeaksGauss(data_all$high) #lazy loading
         highPeaksGauss
-      }}})
+      }
+    }
+  })
   
   
   output$thresholdScansHeader <- renderText({ 
@@ -68,7 +76,7 @@ shinyServer(function(input, output) {
   })
   
   output$pixelDACCharacteristic <- renderPlot({
-    trimDACchar(peaks(), pixelIndex())
+    plotTrimDACchar(peaks(), pixelIndex())
   })
   ####################################################################################################
   
@@ -79,4 +87,4 @@ shinyServer(function(input, output) {
   ####################################################################################################
   
   
-  })
+})

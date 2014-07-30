@@ -10,7 +10,7 @@ findPeaksMax <- function(scanData){
 
 findPeaksGauss <- function(scanData){
   cl <- makeCluster(2)
-  m <- parApply(cl, scanData$counts[1:20,,1:200], c(1,3), approxThresholdScan, scanData$thresholds)
+  m <- parApply(cl, scanData$counts, c(1,3), approxThresholdScan, scanData$thresholds)
   stopCluster(cl)
   m
 }

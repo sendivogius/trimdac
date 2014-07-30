@@ -1,15 +1,12 @@
-parReadTrimDACs <- function(directory){
+parReadTrimDACs <- function(directory, loadPeaks=T){
   cl <- makeCluster(2)
   out <- parLapply(cl, c("l","h"), readMode, directory)
-  stopCluster(cl)
-  names(out) <- c("low", "high")
+  stopCluster(cl) 
   list(low=out[[1]], high=out[[2]])
 }
 
 
 readMode <- function(mode, directory){
-  print(mode)
-  print(directory)
   files <- list.files(path=directory, pattern=paste("*", mode,".csv$", sep=""))
   
   DACs <- length(files)
