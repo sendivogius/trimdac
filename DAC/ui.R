@@ -13,6 +13,11 @@ shinyUI(fluidPage(
                                                   min = 0,
                                                   max = 63,
                                                   value = 0),
+                                      sliderInput("pixels",
+                                                  "Pixels:",
+                                                  min = 0,
+                                                  max = 431,
+                                                  value = c(1,100)),
                                       radioButtons("counters", "Counters", c("low", "high"), selected = "low", inline = TRUE),
                                       div(style="display:inline-block;width:45%;margin-right:10px",
                                           numericInput("row",
@@ -43,7 +48,7 @@ shinyUI(fluidPage(
                        h3("Overview"),
                        fluidRow(
                          column(6,
-                                plotOutput("thresholdOverviewUncorrected")
+                                imageOutput("thresholdOverviewUncorrected")
                          ),
                          column(6,
                                 h4("Corrected"),
@@ -59,10 +64,18 @@ shinyUI(fluidPage(
                          ),
                          column(6,
                                 h4("Corrected")
-                         
+                                
+                         )
                        ),
-                       h3("Summary")
-                       )        
+                       hr(),
+                       h3("Summary"),
+                       fluidRow(
+                         column(4),
+                         column(4,
+                                uiOutput("summaryTable")  
+                         ),
+                         column(4)
+                       )
               ), 
               tabPanel("Pixel characteristic",
                        h3(textOutput("thresholdScansHeader")),

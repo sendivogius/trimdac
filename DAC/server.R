@@ -16,6 +16,7 @@ lowPeaksMax <- findPeaksMax(data_all$low)
 highPeaksMax <- findPeaksMax(data_all$high)
 
 peaksFile <- paste(directory, "//peaksGauss.RData", sep="")
+print(peaksFile)
 if(file.exists(peaksFile)){
   peaks <- load(peaksFile)
   print("readed peaks")
@@ -68,6 +69,10 @@ shinyServer(function(input, output) {
   output$DACcharacteristicHeader <- renderText({ 
     paste("DAC characteristic (pixel=", pixelIndex()-1,")")
   })
+  
+  output$summaryTable <- renderUI(
+    getSummaryTable(peaks(), input$DAC)
+  )
   ####################################################################################################
   
   ## 1D plots ########################################################################################
@@ -87,9 +92,9 @@ shinyServer(function(input, output) {
   ## 2D plots ########################################################################################
   output$thresholdOverviewUncorrected <- renderPlot({
     if(input$showMode == "Values")
-      drawUncorrectedData(data(), input$DAC, input$thresholdRange, input$showLines)
+      drawUncorrectedData(data(), input$DAC, input$thresholdRange, input$showLines, input$pixels)
     else if (input$showMode == "Peak positions")
-      drawPeaksPositions(data(), peaks(), input$DAC, input$thresholdRange, input$showLines)
+      drawPeaksPositions(data(), peaks(), input$DAC, input$thresholdRange, input$showLines, input$pixels)
   })
   ####################################################################################################
   

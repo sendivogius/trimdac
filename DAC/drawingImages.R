@@ -1,4 +1,4 @@
-drawUncorrectedData <- function(scanData, DAC, range, showLines=F){
+drawUncorrectedData <- function(scanData, DAC, range, showLines=F, pixRange){
   DACindex <- DAC+1
   data <- scanData$counts[DACindex,,]
   image.plot(scanData$thresholds, 1:ncol(data), data, 
@@ -6,7 +6,8 @@ drawUncorrectedData <- function(scanData, DAC, range, showLines=F){
              main=paste('Threshold scan result for ', DAC, 'DAC value'),
              xlab='Threshold value [mV]', 
              ylab='Pixel number', 
-             xlim=range
+             xlim=range,
+             ylim=pixRange
   )
 
   if(showLines==T)
@@ -20,7 +21,7 @@ drawUncorrectedData <- function(scanData, DAC, range, showLines=F){
   }
 }
 
-drawPeaksPositions <- function (scanData, peaks, DAC, range, showLines){
+drawPeaksPositions <- function (scanData, peaks, DAC, range, showLines, pixRange){
   DACindex <- DAC+1
   data <- peaks[DACindex,]
   pixels <- length(scanData$counts[1,1,])
@@ -30,7 +31,8 @@ drawPeaksPositions <- function (scanData, peaks, DAC, range, showLines){
         col=gray.colors(2,0,1),
         xlab='Threshold value [mV]', 
         ylab='Pixel number',
-        xlim=range
+        xlim=range,
+        ylim=pixRange
   )
   
   if(showLines==T)
