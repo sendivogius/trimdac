@@ -1,9 +1,19 @@
-drawUncorrectedData <- function(scanData, DAC, range, showLines=F, pixRange){
-  DACindex <- DAC+1
-  data <- scanData$counts[DACindex,,]
+drawUncorrectedData <- function(scanData, DACs, range, showLines=F, pixRange){
+  #DACs dac index for each pixel
+  print(DACs)
+  data <- sapply(1:432, function(i) {
+    scanData$counts[DACs[i],,i]
+  })
+  data[is.na(data)] <- 0
+  
+  if(all(!is.na(DACs)) && min(DACs) == max(DACs))
+    title <- paste('Threshold scans result for ', DACs[1]-1, 'DAC value')
+  else
+    title <- paste('Threshold scans after correction')
+    
   image.plot(scanData$thresholds, 1:ncol(data), data, 
              col=gray.colors(1000,0,1),
-             main=paste('Threshold scan result for ', DAC, 'DAC value'),
+             main=title,
              xlab='Threshold value [mV]', 
              ylab='Pixel number', 
              xlim=range,
@@ -21,9 +31,15 @@ drawUncorrectedData <- function(scanData, DAC, range, showLines=F, pixRange){
   }
 }
 
-drawPeaksPositions <- function (scanData, peaks, DAC, range, showLines, pixRange){
-  DACindex <- DAC+1
-  data <- peaks[DACindex,]
+drawPeaksPositions <- function (scanData, peaks, DACs, range, showLines, pixRange){
+  ind <- cbind(DACs, 1:432)
+  data <- peaks[ind]
+  
+  if(all(!is.na(DACs)) && min(DACs) == max(DACs))
+    title <- paste('Peaks positions result for ', DACs[1]-1, 'DAC value')
+  else
+    title <- paste('Peaks position after correction')
+  
   pixels <- length(scanData$counts[1,1,])
   scans <- length(scanData$thresholds)
   m <- matrix(rep(0,scans*pixels), scans, pixels)
@@ -32,7 +48,8 @@ drawPeaksPositions <- function (scanData, peaks, DAC, range, showLines, pixRange
         xlab='Threshold value [mV]', 
         ylab='Pixel number',
         xlim=range,
-        ylim=pixRange
+        ylim=pixRange,
+        main=title
   )
   
   if(showLines==T)

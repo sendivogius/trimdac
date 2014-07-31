@@ -46,10 +46,11 @@ plotThresholdScan <- function(data, pixelIndex, DAC, range, showLines, peakMode=
   }
 }
 
-plotHistogram <- function(peaks, DAC, bins, showLines)
+plotHistogram <- function(peaks, DACs, bins, showLines)
 {
-  DACindex <- DAC+1
-  data <- peaks[DACindex,]
+  ind <- cbind(DACs, 1:432)
+  data <- peaks[ind]
+  
   h <- hist(data, 
        breaks=bins, 
        col="blue", 

@@ -31,7 +31,7 @@ shinyUI(fluidPage(
                                                        min = 1,
                                                        max = 18,
                                                        value = 1)),
-                                      sliderInput("thrcorr", "Correct to [mV]: ", min=00, max=1400, value=1200),
+                                      sliderInput("thrcorr", "Correct to [mV]: ", min=1150, max=1350, value=1200),
                                       selectInput("showMode", "Show mode", c("Values", "Peak positions", "Bad pixels"), selected = NULL, multiple = FALSE, selectize = TRUE, width = NULL),
                                       selectInput("peaksMode", "Peak detection algorithm", c("Max", "Gauss"), selected = NULL, multiple = FALSE, selectize = TRUE, width = NULL),
                                       checkboxInput("showLines", "Show lines", value=T),
@@ -51,11 +51,9 @@ shinyUI(fluidPage(
                                 plotOutput("thresholdOverviewUncorrected", clickId="uncorrectedClickId")
                          ),
                          column(6,
-                                h4("Corrected"),
-                                
-                                checkboxInput("checkbox", label = "Choice A", value = TRUE))
+                                plotOutput("thresholdOverviewCorrected", clickId="uncorrectedClickId")
                          
-                       ),
+                        )),
                        hr(),
                        h3("Histograms", style="text-align: center; padding-right:200px"),
                        fluidRow(
@@ -63,7 +61,7 @@ shinyUI(fluidPage(
                                 plotOutput("uncorrectedHistogram")
                          ),
                          column(6,
-                                h4("Corrected")
+                                plotOutput("correctedHistogram")
                                 
                          )
                        ),
@@ -87,7 +85,7 @@ shinyUI(fluidPage(
                          column(2)
                        ),
                        h3(textOutput("DACcharacteristicHeader"), style="text-align: center;"),
-                       plotOutput("pixelDACCharacteristic", clickId="DACClickId")             
+                       plotOutput("pixelDACCharacteristic"), clickId="DACClickId")             
               ), 
               tabPanel("Simulation", tableOutput("table"))
             )
