@@ -70,3 +70,13 @@ calcCorrection <- function(peaksPositions, thresholdValue){
          
   })
 }
+
+bestCorrection <- function(peaks){
+  sapply(1150:1250, function(th) {
+    corr <- calcCorrection(peaks, th)
+    ind <- cbind(corr, 1:432)
+    data <- peaks[ind]
+    sum <- calcSummary(data)
+    sum$std
+    })
+}

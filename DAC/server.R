@@ -72,7 +72,7 @@ shinyServer(function(input, output, session) {
   
   observe({
     pixel <- input$uncorrectedClickId
-    print(pixel)
+   # print(pixel)
     if(   !is.null(pixel)
           && pixel$x >= input$thresholdRange[1] && pixel$x <= input$thresholdRange[2]
           && pixel$y >= input$pixelRange[1] && pixel$y <= input$pixelRange[2]){
@@ -86,11 +86,11 @@ shinyServer(function(input, output, session) {
   
   observe({
     pixel <- input$DACClickId
-  #  print(pixel$y)
+    #  print(pixel$y)
     if( !(is.null(pixel) || all(is.na(peaksForDACs())))){
       DAC <- round(pixel$x)
       ran <- range(peaksForDACs(), na.rm=T)
-    #  print(ran)
+      #  print(ran)
       if(DAC >= 0 && DAC <= 63
          && abs(DAC-pixel$x) <= 0.3
          && pixel$y <= ran[2]+1 && pixel$y >= ran[1]-1){
@@ -109,7 +109,7 @@ shinyServer(function(input, output, session) {
   output$DACcharacteristicHeader <- renderText({ 
     paste("DAC characteristic (pixel=", pixelIndex(),")")
   })
-   
+  
   output$summaryTable <- renderUI(
     getSummaryTable(peaks(), input$DAC, correction())
   )
@@ -126,8 +126,6 @@ shinyServer(function(input, output, session) {
   
   output$uncorrectedHistogram <- renderPlot({
     a <- rep(input$DAC, 432)
-    print(a)
-    cat(a)
     plotHistogram(peaks(),  a+1, input$bins, input$showLines)
   })
   output$correctedHistogram <- renderPlot({
@@ -137,21 +135,25 @@ shinyServer(function(input, output, session) {
   
   ## 2D plots ########################################################################################
   output$thresholdOverviewUncorrected <- renderPlot({
-    if(input$showMode == "Values"){
+    if(input$showMode == "Values")
       drawUncorrectedData(data(), rep(input$DAC+1, 432), input$thresholdRange, input$showLines, input$pixelRange)
-    } else {
-    #  if (input$showMode == "Peak positions")
-        drawPeaksPositions(data(), peaks(), rep(input$DAC+1, 432), input$thresholdRange, input$showLines, input$pixelRange)
-    }
-  }, height=564)
+    else
+      drawPeaksPositions(data(), peaks(), rep(input$DAC+1, 432), input$thresholdRange, input$showLines, input$pixelRange)
+    },height=564)
   
   output$thresholdOverviewCorrected <- renderPlot({
     if(input$showMode == "Values")
       drawUncorrectedData(data(), correction(), input$thresholdRange, input$showLines, input$pixelRange)
-    else if (input$showMode == "Peak positions")
+    else
       drawPeaksPositions(data(), peaks(), correction(), input$thresholdRange, input$showLines, input$pixelRange)
   }, height=564)
   ####################################################################################################
   
-  
+  output$downloadData <- downloadHandler(
+    filename = function() { 
+      paste("corr", input$counters, input$thrcorr,  '.txt', sep='_') 
+    },
+    content = function(file) {
+      write.table(correction(), file, quote=F, row.names=F, col.names=F)
+    })
 })

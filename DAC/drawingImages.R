@@ -61,3 +61,27 @@ drawPeaksPositions <- function (scanData, peaks, DACs, range, showLines, pixRang
   
   points(data, 1:pixels, col=0, pch='.')
 }
+
+
+drawBadPixels <- function (peaks, range, pixRange){
+  bp <- apply(peaks, 2, function(p) {all(is.na(p))})
+  
+  
+  image.plot(scanData$thresholds, 1:pixels, m, 
+             col=gray.colors(2,0,1),
+             xlab='Threshold value [mV]', 
+             ylab='Pixel number',
+             xlim=range,
+             ylim=pixRange,
+             main=title
+  )
+  
+  if(showLines==T)
+  {
+    sum <- calcSummary(data)
+    abline(v=sum$mean, col=2)  
+    abline(v=c(sum$mean-sum$std,sum$mean+sum$std), col=3)
+  }
+  
+  points(data, 1:pixels, col=0, pch='.')
+}

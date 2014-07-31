@@ -32,11 +32,12 @@ shinyUI(fluidPage(
                                                        max = 18,
                                                        value = 1)),
                                       sliderInput("thrcorr", "Correct to [mV]: ", min=1150, max=1350, value=1200),
-                                      selectInput("showMode", "Show mode", c("Values", "Peak positions", "Bad pixels"), selected = NULL, multiple = FALSE, selectize = TRUE, width = NULL),
+                                      selectInput("showMode", "Show mode", c("Values", "Peaks | Bad pixels"), selected = NULL, multiple = FALSE, selectize = TRUE, width = NULL),
                                       selectInput("peaksMode", "Peak detection algorithm", c("Max", "Gauss"), selected = NULL, multiple = FALSE, selectize = TRUE, width = NULL),
                                       checkboxInput("showLines", "Show lines", value=T),
                                       sliderInput("thresholdRange", "Threshold range", min=800, max=1400, value=c(800,1400)),
-                                      sliderInput("bins", "Bins of histogram", min=10, max=432, value=50)
+                                      sliderInput("bins", "Bins of histogram", min=10, max=432, value=50),
+                                      downloadButton('downloadData', 'Download correction file')
                                       
   ),
   
@@ -85,7 +86,7 @@ shinyUI(fluidPage(
                          column(2)
                        ),
                        h3(textOutput("DACcharacteristicHeader"), style="text-align: center;"),
-                       plotOutput("pixelDACCharacteristic"), clickId="DACClickId")             
+                       plotOutput("pixelDACCharacteristic", clickId="DACClickId")             
               ), 
               tabPanel("Simulation", tableOutput("table"))
             )
