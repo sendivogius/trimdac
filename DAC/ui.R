@@ -31,13 +31,15 @@ shinyUI(fluidPage(
                                                        min = 1,
                                                        max = 18,
                                                        value = 1)),
-                                      sliderInput("thrcorr", "Correct to [mV]: ", min=1150, max=1350, value=1200),
+                                      sliderInput("thrcorr", "Correct to [mV]: ", min=1150, max=1250, value=1200),
                                       selectInput("showMode", "Show mode", c("Values", "Peaks | Bad pixels"), selected = NULL, multiple = FALSE, selectize = TRUE, width = NULL),
                                       selectInput("peaksMode", "Peak detection algorithm", c("Max", "Gauss"), selected = NULL, multiple = FALSE, selectize = TRUE, width = NULL),
                                       checkboxInput("showLines", "Show lines", value=T),
                                       sliderInput("thresholdRange", "Threshold range", min=800, max=1400, value=c(800,1400)),
                                       sliderInput("bins", "Bins of histogram", min=10, max=432, value=50),
-                                      downloadButton('downloadData', 'Download correction file')
+                                      downloadButton('downloadData', 'Download correction file'),
+                                      actionButton('findBestCorr', 'Find best correction thresholds'),
+                                      actionButton('findBestCorr2', 'Find best correction thresholds2')
                                       
   ),
   

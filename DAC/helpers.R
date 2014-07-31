@@ -30,7 +30,7 @@ getSummaryTable <- function(peaks, DAC, correction, digits=2){
   ind <- cbind(correction, 1:432)
   dataCorr <- peaks[ind]
   sumCorrected <- calcSummary(dataCorr)
-    
+  
   text <- '<div id="summaryTable" class="shiny-html-output shiny-bound-output">
       <table class="data table table-bordered table-condensed">
       <tbody>
@@ -64,19 +64,37 @@ calcCorrection <- function(peaksPositions, thresholdValue){
   sapply(1:432, function(pixInd){
     data <- peaksPositions[,pixInd]
     if(!all(is.na(data)))
-       which.min(abs(data-thresholdValue))
-     else
+      which.min(abs(data-thresholdValue))
+    else
       NA
-         
+    
   })
 }
 
 bestCorrection <- function(peaks){
-  sapply(1150:1250, function(th) {
+  r <- round(range(peaks, na.rm=T))
+  ind <- seq.int(r[1], r[2])
+  stds <- sapply(ind, function(th) {
     corr <- calcCorrection(peaks, th)
     ind <- cbind(corr, 1:432)
     data <- peaks[ind]
     sum <- calcSummary(data)
     sum$std
-    })
+  })
+  print(min(stds))
+  ind[which.min(stds)]
+}
+
+bestCorrection2 <- function(peaks){
+  r <- round(range(peaks, na.rm=T))
+  ind <- seq.int(r[1], r[2])
+  stds <- sapply(ind, function(th) {
+    corr <- calcCorrection(peaks, th)
+    ind <- cbind(corr, 1:432)
+    data <- peaks[ind]
+    sum <- calcSummary(data)
+    abs(sum$mean-th)
+  })
+  print(min(stds))
+  ind[which.min(stds)]
 }

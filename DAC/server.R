@@ -156,4 +156,16 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       write.table(correction(), file, quote=F, row.names=F, col.names=F)
     })
+  
+  observe({
+    input$findBestCorr
+    bc <- bestCorrection(peaks())
+    updateSliderInput(session, "thrcorr", value=bc)
+  })
+  
+  observe({
+    input$findBestCorr2
+    bc <- bestCorrection2(peaks())
+    updateSliderInput(session, "thrcorr", value=bc)
+  })
 })
