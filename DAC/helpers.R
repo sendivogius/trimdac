@@ -1,8 +1,16 @@
 
 calculatePixelIndex <- function(row, col){
-  #pixel Index
+  #row, col starts from 1
+  #pixel index 1-432
   (row-1)*18+col
 }
+
+calculatePixelRowCol <- function(index){
+  row <- ceiling(index/18)
+  col <- index-18*(row-1)
+  list(row=row, col=col)
+}
+
 
 calcSummary <- function(data){
   list(

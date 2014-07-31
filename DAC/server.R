@@ -31,45 +31,81 @@ oldpar <- par(mar=c(0,0,0,0))
 
 
 # Define server logic required to draw a histogram
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
   ## Reacives ###
   pixelIndex <- reactive({
     calculatePixelIndex(input$row, input$col)
   })
   
   data <- reactive({
-    if(input$counters == "low")
+    if(input$counters == "low"){
       data_all$low
-    else
+    } else {
       data_all$high
+    }
   })
   
   peaks <- reactive({
     if(input$counters == "low"){
-      if(input$peaksMode == "Max")
+      if(input$peaksMode == "Max"){
         lowPeaksMax
-      else{
+      } else {
         lowPeaksGauss
       }
     }
     else{
-      if(input$peaksMode == "Max")
+      if(input$peaksMode == "Max"){
         highPeaksMax #precalculated
-      else{
+      } else {
         highPeaksGauss
       }
     }
   })
   
+  peaksForDACs <- reactive({
+    peaks()[,pixelIndex()]
+  })
+  
+  observe({
+    pixel <- input$uncorrectedClickId
+    print(pixel)
+    if(   !is.null(pixel)
+          && pixel$x >= input$thresholdRange[1] && pixel$x <= input$thresholdRange[2]
+          && pixel$y >= input$pixelRange[1] && pixel$y <= input$pixelRange[2]){
+      
+      pixelIndex <- round(pixel$y)
+      pixelrc <- calculatePixelRowCol(pixelIndex)
+      updateNumericInput(session, "col", value=pixelrc$col)
+      updateNumericInput(session, "row", value=pixelrc$row)
+    }
+  })
+  
+  observe({
+    pixel <- input$DACClickId
+    print(pixel$y)
+    if( !(is.null(pixel) || all(is.na(peaksForDACs())))){
+      DAC <- round(pixel$x)
+      ran <- range(peaksForDACs(), na.rm=T)
+      print(ran)
+      if(DAC >= 0 && DAC <= 63 
+         && abs(DAC-pixel$x) <= 0.3
+         && pixel$y <= ran[2]+1 && pixel$y >= ran[1]-1){
+        updateSliderInput(session, "DAC", value=DAC)
+      }
+    }
+    
+  })
   
   output$thresholdScansHeader <- renderText({ 
-    paste("Threshold scans (DAC=", input$DAC, ", pixel=", pixelIndex()-1,")")
+    
+    paste("Threshold scans (DAC=", input$DAC, ", pixel=", pixelIndex(),")")
+    
   })
   
   output$DACcharacteristicHeader <- renderText({ 
-    paste("DAC characteristic (pixel=", pixelIndex()-1,")")
+    paste("DAC characteristic (pixel=", pixelIndex(),")")
   })
-  
+   
   output$summaryTable <- renderUI(
     getSummaryTable(peaks(), input$DAC)
   )
@@ -81,10 +117,10 @@ shinyServer(function(input, output) {
   }, width=738)
   
   output$pixelDACCharacteristic <- renderPlot({
-    plotTrimDACchar(peaks(), pixelIndex())
+    plotTrimDACchar(peaksForDACs())
   })
   
-    output$uncorrectedHistogram <- renderPlot({
+  output$uncorrectedHistogram <- renderPlot({
     plotHistogram(peaks(), input$DAC, input$bins, input$showLines)
   })
   ####################################################################################################
@@ -92,9 +128,9 @@ shinyServer(function(input, output) {
   ## 2D plots ########################################################################################
   output$thresholdOverviewUncorrected <- renderPlot({
     if(input$showMode == "Values")
-      drawUncorrectedData(data(), input$DAC, input$thresholdRange, input$showLines, input$pixels)
+      drawUncorrectedData(data(), input$DAC, input$thresholdRange, input$showLines, input$pixelRange)
     else if (input$showMode == "Peak positions")
-      drawPeaksPositions(data(), peaks(), input$DAC, input$thresholdRange, input$showLines, input$pixels)
+      drawPeaksPositions(data(), peaks(), input$DAC, input$thresholdRange, input$showLines, input$pixelRange)
   }, height=564)
   ####################################################################################################
   

@@ -13,11 +13,11 @@ shinyUI(fluidPage(
                                                   min = 0,
                                                   max = 63,
                                                   value = 0),
-                                      sliderInput("pixels",
+                                      sliderInput("pixelRange",
                                                   "Pixels:",
-                                                  min = 0,
-                                                  max = 431,
-                                                  value = c(0,431)),
+                                                  min = 1,
+                                                  max = 432,
+                                                  value = c(1,432)),
                                       radioButtons("counters", "Counters", c("low", "high"), selected = "low", inline = TRUE),
                                       div(style="display:inline-block;width:45%;margin-right:10px",
                                           numericInput("row",
@@ -45,10 +45,10 @@ shinyUI(fluidPage(
   mainPanel(width=10,
             tabsetPanel(
               tabPanel("Correction",
-                       h3("Overview"),
-                       fluidRow(
+                       h3("Overview", style="text-align: center; padding-right:200px"),
+                       fluidRow(style="height:560px",
                          column(6,
-                                imageOutput("thresholdOverviewUncorrected")
+                                plotOutput("thresholdOverviewUncorrected", clickId="uncorrectedClickId")
                          ),
                          column(6,
                                 h4("Corrected"),
@@ -57,7 +57,7 @@ shinyUI(fluidPage(
                          
                        ),
                        hr(),
-                       h3("Histograms"),
+                       h3("Histograms", style="text-align: center; padding-right:200px"),
                        fluidRow(
                          column(6,
                                 plotOutput("uncorrectedHistogram")
@@ -68,7 +68,7 @@ shinyUI(fluidPage(
                          )
                        ),
                        hr(),
-                       h3("Summary"),
+                       h3("Summary", style="text-align: center; padding-right:200px"),
                        fluidRow(
                          column(4),
                          column(4,
@@ -78,7 +78,7 @@ shinyUI(fluidPage(
                        )
               ), 
               tabPanel("Pixel characteristic",
-                       h3(textOutput("thresholdScansHeader")),
+                       h3(textOutput("thresholdScansHeader"),style="text-align: center;"),
                        fluidRow(
                          column(2),
                          column(8,
@@ -86,8 +86,8 @@ shinyUI(fluidPage(
                          ),
                          column(2)
                        ),
-                       h3(textOutput("DACcharacteristicHeader")),
-                       plotOutput("pixelDACCharacteristic")             
+                       h3(textOutput("DACcharacteristicHeader"), style="text-align: center;"),
+                       plotOutput("pixelDACCharacteristic", clickId="DACClickId")             
               ), 
               tabPanel("Simulation", tableOutput("table"))
             )

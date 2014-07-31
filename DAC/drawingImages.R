@@ -15,7 +15,7 @@ drawUncorrectedData <- function(scanData, DAC, range, showLines=F, pixRange){
     maxInd <- apply(data, 2, which.max)
     maxInd[maxInd==1] <- NA
     maxVal <- scanData$thresholds[maxInd]
-    sum <- calcSummary(maxVal)
+    sum <- calcSummary(maxVal)  
     abline(v=sum$mean, col=2)  
     abline(v=c(sum$mean-sum$std,sum$mean+sum$std), col=3)
   }
