@@ -2,8 +2,7 @@ library(shiny)
 library(parallel)
 library(fields)
 
-#source("readTrimDACs.R")
-source("parReadTrimDACs.R")
+source("readTrimDACsPar.R")
 source("drawingImages.R")
 source("plots1D.R")
 source("findPeaks.R")
@@ -11,20 +10,19 @@ source("helpers.R")
 
 directory <- "data"
 
-data_all <- parReadTrimDACs(directory)
+data_all <- readTrimDACsPar(directory)
 lowPeaksMax <- findPeaksMax(data_all$low)
 highPeaksMax <- findPeaksMax(data_all$high)
 
 peaksFile <- paste(directory, "//peaksGauss.RData", sep="")
-print(peaksFile)
 if(file.exists(peaksFile)){
   peaks <- load(peaksFile)
-  print("readed peaks")
+#   print("readed peaks")
 } else {
   lowPeaksGauss <- findPeaksGauss(data_all$low)
   highPeaksGauss <- findPeaksGauss(data_all$high)
   save(lowPeaksGauss, highPeaksGauss, file=peaksFile)
-  print("calc and saved")
+#   print("calc and saved")
 }
 
 oldpar <- par(mar=c(0,0,0,0))

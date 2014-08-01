@@ -98,3 +98,38 @@ bestCorrection2 <- function(peaks){
   print(min(stds))
   ind[which.min(stds)]
 }
+
+cutData <- function(data, thresholds, thresholdRange, pixelRange)
+{
+  #thresholds indices
+  if(thresholdRange[1] < thresholds[1])
+    thrIndLow <- 1
+  else
+    thrIndLow <- which(thresholds>thresholdRange[1])[1]-1 #index of largest element which is lower or equal to low threshold (in case where thresholds are not by 1)
+  
+  if(thresholdRange[2] > tail(thresholds,n=1))
+    thrIndHigh <- length(thresholds)
+  else
+    thrIndHigh <- which(thresholds>=thresholdRange[2])[1]
+  
+  thresholdsInd <- thrIndLow:thrIndHigh
+  
+  
+  #pixel indices
+  pixMinIndex <- max(1,pixelRange[1])
+  pixMaxIndex <- min(length(data[1,]),pixelRange[2])
+  
+  pixelsInd <- pixMinIndex:pixMaxIndex;
+  
+  
+  #cutting data
+  data <- data[thresholdsInd,pixelsInd]
+  thresholds <- thresholds[thresholdsInd]
+  
+  list(data = data, thresholds = thresholds, pixels = pixelsInd)
+}
+
+
+
+
+

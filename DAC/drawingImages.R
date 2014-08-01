@@ -1,25 +1,27 @@
 drawUncorrectedData <- function(scanData, DACs, range, showLines=F, pixRange){
   #DACs dac index for each pixel
-  print(DACs)
   data <- sapply(1:432, function(i) {
-    scanData$counts[DACs[i],,i]
+    array(scanData$counts[DACs[i],,i])
   })
   data[is.na(data)] <- 0
   
+  #title - if all same values DAC, otherwise correction
   if(all(!is.na(DACs)) && min(DACs) == max(DACs))
     title <- paste('Threshold scans result for ', DACs[1]-1, 'DAC value')
   else
     title <- paste('Threshold scans after correction')
-    
-  image.plot(scanData$thresholds, 1:ncol(data), data, 
+  
+  cutData <- cutData(data, scanData$thresholds, range, pixRange)
+  
+  image.plot(cutData$thresholds, cutData$pixels, cutData$data, 
              col=gray.colors(1000,0,1),
              main=title,
              xlab='Threshold value [mV]', 
-             ylab='Pixel number', 
-             xlim=range,
-             ylim=pixRange
+             ylab='Pixel number',
+             xlim=range
   )
 
+  #calculates on original data, not cutted
   if(showLines==T)
   {
     maxInd <- apply(data, 2, which.max)
@@ -35,6 +37,7 @@ drawPeaksPositions <- function (scanData, peaks, DACs, range, showLines, pixRang
   ind <- cbind(DACs, 1:432)
   data <- peaks[ind]
   
+  #title
   if(all(!is.na(DACs)) && min(DACs) == max(DACs))
     title <- paste('Peaks positions result for ', DACs[1]-1, 'DAC value')
   else
@@ -50,30 +53,6 @@ drawPeaksPositions <- function (scanData, peaks, DACs, range, showLines, pixRang
         xlim=range,
         ylim=pixRange,
         main=title
-  )
-  
-  if(showLines==T)
-  {
-    sum <- calcSummary(data)
-    abline(v=sum$mean, col=2)  
-    abline(v=c(sum$mean-sum$std,sum$mean+sum$std), col=3)
-  }
-  
-  points(data, 1:pixels, col=0, pch='.')
-}
-
-
-drawBadPixels <- function (peaks, range, pixRange){
-  bp <- apply(peaks, 2, function(p) {all(is.na(p))})
-  
-  
-  image.plot(scanData$thresholds, 1:pixels, m, 
-             col=gray.colors(2,0,1),
-             xlab='Threshold value [mV]', 
-             ylab='Pixel number',
-             xlim=range,
-             ylim=pixRange,
-             main=title
   )
   
   if(showLines==T)

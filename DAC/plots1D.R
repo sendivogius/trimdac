@@ -30,11 +30,9 @@ plotThresholdScan <- function(data, pixelIndex, DAC, range, showLines, peakMode=
   
   if(showLines){
     max_ind <-  which.max(scan)
-    print(max_ind)
     x <- data$thresholds[max_ind]
     y <- max(scan)
     if(peakMode != "Max" && max_ind != 1){
-      print("w ifie")
       th2 <- seq(par[1]-5*par[2],par[1]+5*par[2], length.out=50)
       appr <- par[3] * exp(-0.5 * ((th2 - par[1])/par[2])^2)
       lines(th2, appr, col="blue", type="l")
