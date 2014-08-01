@@ -17,12 +17,12 @@ highPeaksMax <- findPeaksMax(data_all$high)
 peaksFile <- paste(directory, "//peaksGauss.RData", sep="")
 if(file.exists(peaksFile)){
   peaks <- load(peaksFile)
-#   print("readed peaks")
+  #   print("readed peaks")
 } else {
   lowPeaksGauss <- findPeaksGauss(data_all$low)
   highPeaksGauss <- findPeaksGauss(data_all$high)
   save(lowPeaksGauss, highPeaksGauss, file=peaksFile)
-#   print("calc and saved")
+  #   print("calc and saved")
 }
 
 oldpar <- par(mar=c(0,0,0,0))
@@ -70,7 +70,7 @@ shinyServer(function(input, output, session) {
   
   observe({
     pixel <- input$uncorrectedClickId
-   # print(pixel)
+    # print(pixel)
     if(   !is.null(pixel)
           && pixel$x >= input$thresholdRange[1] && pixel$x <= input$thresholdRange[2]
           && pixel$y >= input$pixelRange[1] && pixel$y <= input$pixelRange[2]){
@@ -107,13 +107,10 @@ shinyServer(function(input, output, session) {
   output$DACcharacteristicHeader <- renderText({ 
     paste("DAC characteristic (pixel=", pixelIndex(),")")
   })
-  
-  output$summaryTable <- renderUI(
-    getSummaryTable(peaks(), input$DAC, correction())
-  )
-  ####################################################################################################
-  
-  ## 1D plots ########################################################################################
+  #   
+  #   ####################################################################################################
+  #   
+  #   ## 1D plots ########################################################################################
   output$thresholdScanUncorrected <- renderPlot({ 
     plotThresholdScan(data(), pixelIndex(), input$DAC, input$thresholdRange, input$showLines, input$peaksMode)
   }, width=738)
@@ -123,21 +120,20 @@ shinyServer(function(input, output, session) {
   })
   
   output$uncorrectedHistogram <- renderPlot({
-    a <- rep(input$DAC, 432)
-    plotHistogram(peaks(),  a+1, input$bins, input$showLines)
+    plotHistogram(peaks(),  rep(input$DAC+1, 432), input$bins, input$showLines)
   })
   output$correctedHistogram <- renderPlot({
     plotHistogram(peaks(), correction(), input$bins, input$showLines)
   })
-  ####################################################################################################
-  
-  ## 2D plots ########################################################################################
+  #   ####################################################################################################
+  #   
+  #   ## 2D plots ########################################################################################
   output$thresholdOverviewUncorrected <- renderPlot({
     if(input$showMode == "Values")
       drawUncorrectedData(data(), rep(input$DAC+1, 432), input$thresholdRange, input$showLines, input$pixelRange)
     else
       drawPeaksPositions(data(), peaks(), rep(input$DAC+1, 432), input$thresholdRange, input$showLines, input$pixelRange)
-    },height=564)
+  },height=564)
   
   output$thresholdOverviewCorrected <- renderPlot({
     if(input$showMode == "Values")
@@ -145,7 +141,7 @@ shinyServer(function(input, output, session) {
     else
       drawPeaksPositions(data(), peaks(), correction(), input$thresholdRange, input$showLines, input$pixelRange)
   }, height=564)
-  ####################################################################################################
+  #   ####################################################################################################
   
   output$downloadData <- downloadHandler(
     filename = function() { 
@@ -166,4 +162,28 @@ shinyServer(function(input, output, session) {
     bc <- bestCorrection2(peaks())
     updateSliderInput(session, "thrcorr", value=bc)
   })
+  
+    output$summaryTable <- renderTable({
+      DACindex <- input$DAC+1
+      data <- peaks()[DACindex,]
+      su <- calcSummary(data)
+      
+      ind <- cbind(correction(), 1:432)
+      dataCorr <- peaks()[ind]
+      sc <- calcSummary(dataCorr)
+      
+      uncorrected = formatC(c(su$min, su$mean, su$std, su$median, su$max), digits=2, format='f')
+      names=c("min", "mean", "std", "median", "max")
+      corrected=formatC(c(sc$min, sc$mean, sc$std, sc$median, sc$max), digits=2, format='f')
+      data.frame(uncorrected, names, corrected, stringsAsFactors=F)
+      
+    }, include.rownames=F)
+  
+  #   not working, input$DAC causes to not update images when DAC changes
+#   output$summaryTable <- renderUI({
+#     d <- input$DAC
+#     p <- peaks()
+#     c <- correction()
+#     isolate(getSummaryTable(p, d, c))
+#     })
 })

@@ -81,8 +81,7 @@ bestCorrection <- function(peaks){
     sum <- calcSummary(data)
     sum$std
   })
-  print(min(stds))
-  ind[which.min(stds)]
+    ind[which.min(stds)]
 }
 
 bestCorrection2 <- function(peaks){
@@ -95,8 +94,7 @@ bestCorrection2 <- function(peaks){
     sum <- calcSummary(data)
     abs(sum$mean-th)
   })
-  print(min(stds))
-  ind[which.min(stds)]
+    ind[which.min(stds)]
 }
 
 cutData <- function(data, thresholds, thresholdRange, pixelRange)

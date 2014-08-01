@@ -73,7 +73,7 @@ shinyUI(fluidPage(
                        fluidRow(
                          column(4),
                          column(4,
-                                uiOutput("summaryTable")  
+                                 tableOutput("summaryTable")
                          ),
                          column(4)
                        )
