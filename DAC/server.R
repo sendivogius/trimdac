@@ -141,7 +141,18 @@ shinyServer(function(input, output, session) {
     else
       drawPeaksPositions(data(), peaks(), correction(), input$thresholdRange, input$showLines, input$pixelRange)
   }, height=564)
+  
+  output$simulationUncorrected <- renderPlot({
+    if(input$showMode == "Values")
+      drawDetector(data(), rep(input$DAC+1,432), input$simulationThreshold)
+    else
+      drawBadPixels(peaks())
+  })
+  
+  output$simulationCorrected <- renderPlot({
+      drawDetector(data(), correction(), input$simulationThreshold)
   #   ####################################################################################################
+  })
   
   output$downloadData <- downloadHandler(
     filename = function() { 
@@ -163,27 +174,27 @@ shinyServer(function(input, output, session) {
     updateSliderInput(session, "thrcorr", value=bc)
   })
   
-    output$summaryTable <- renderTable({
-      DACindex <- input$DAC+1
-      data <- peaks()[DACindex,]
-      su <- calcSummary(data)
-      
-      ind <- cbind(correction(), 1:432)
-      dataCorr <- peaks()[ind]
-      sc <- calcSummary(dataCorr)
-      
-      uncorrected = formatC(c(su$min, su$mean, su$std, su$median, su$max), digits=2, format='f')
-      names=c("min", "mean", "std", "median", "max")
-      corrected=formatC(c(sc$min, sc$mean, sc$std, sc$median, sc$max), digits=2, format='f')
-      data.frame(uncorrected, names, corrected, stringsAsFactors=F)
-      
-    }, include.rownames=F)
+  output$summaryTable <- renderTable({
+    DACindex <- input$DAC+1
+    data <- peaks()[DACindex,]
+    su <- calcSummary(data)
+    
+    ind <- cbind(correction(), 1:432)
+    dataCorr <- peaks()[ind]
+    sc <- calcSummary(dataCorr)
+    
+    uncorrected = formatC(c(su$min, su$mean, su$std, su$median, su$max), digits=2, format='f')
+    names=c("min", "mean", "std", "median", "max")
+    corrected=formatC(c(sc$min, sc$mean, sc$std, sc$median, sc$max), digits=2, format='f')
+    data.frame(uncorrected, names, corrected, stringsAsFactors=F)
+    
+  }, include.rownames=F)
   
   #   not working, input$DAC causes to not update images when DAC changes
-#   output$summaryTable <- renderUI({
-#     d <- input$DAC
-#     p <- peaks()
-#     c <- correction()
-#     isolate(getSummaryTable(p, d, c))
-#     })
+  #   output$summaryTable <- renderUI({
+  #     d <- input$DAC
+  #     p <- peaks()
+  #     c <- correction()
+  #     isolate(getSummaryTable(p, d, c))
+  #     })
 })

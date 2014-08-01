@@ -64,3 +64,30 @@ drawPeaksPositions <- function (scanData, peaks, DACs, range, showLines, pixRang
   
   points(data, 1:pixels, col=0, pch='.')
 }
+
+drawBadPixels <- function(peaks){
+  bad <- apply(peaks, 2, function(x) {all(is.na(x))})
+  dim(bad) <- c(18,24)
+  image(1:18,1:24,bad, ylim=c(24,1), col=c(rgb(0,1,0,1), rgb(1,0,0,1)))
+}
+
+drawDetector <- function(scanData, DACs, threshold){
+  data <- sapply(1:432, function(i) {
+    array(scanData$counts[DACs[i],,i])
+  })
+  data[is.na(data)] <- 0
+  
+  #approximation needed hence scan can be done by 2mV and plotting by 1mV
+  pixValues <- apply(data, 2, function(scan){
+    a <- approx(scanData$thresholds, scan, threshold)
+    a$y
+  })
+ 
+  dim(pixValues) <- c(18,24)
+  pixValues[1] <-1 
+  n <- 5000
+  colors <- hsv(rep(0.05,n), rep(1,n), seq(0,1,length=n))
+  
+  image.plot(pixValues, border="white", lwd=2)
+#  image.plot(1:18,1:24,pixValues, ylim=c(24,1), col=colors, main=threshold, xlab="cols", ylab="rows", border="white", lwd=2)
+}

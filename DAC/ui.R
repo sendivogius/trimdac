@@ -50,13 +50,13 @@ shinyUI(fluidPage(
               tabPanel("Correction",
                        h3("Overview", style="text-align: center; padding-right:200px"),
                        fluidRow(style="height:560px",
-                         column(6,
-                                plotOutput("thresholdOverviewUncorrected", clickId="uncorrectedClickId")
-                         ),
-                         column(6,
-                                plotOutput("thresholdOverviewCorrected", clickId="uncorrectedClickId")
-                         
-                        )),
+                                column(6,
+                                       plotOutput("thresholdOverviewUncorrected", clickId="uncorrectedClickId")
+                                ),
+                                column(6,
+                                       plotOutput("thresholdOverviewCorrected", clickId="uncorrectedClickId")
+                                       
+                                )),
                        hr(),
                        h3("Histograms", style="text-align: center; padding-right:200px"),
                        fluidRow(
@@ -73,7 +73,7 @@ shinyUI(fluidPage(
                        fluidRow(
                          column(4),
                          column(4,
-                                 tableOutput("summaryTable")
+                                tableOutput("summaryTable")
                          ),
                          column(4)
                        )
@@ -90,7 +90,19 @@ shinyUI(fluidPage(
                        h3(textOutput("DACcharacteristicHeader"), style="text-align: center;"),
                        plotOutput("pixelDACCharacteristic", clickId="DACClickId")             
               ), 
-              tabPanel("Simulation", tableOutput("table"))
+              tabPanel("Simulation",
+                       h3("Overview", style="text-align: center; padding-right:200px"),
+                       sliderInput("simulationThreshold", "Thresholld: ", min=800, max=1400, value=800, width='90%', 
+                                   animate=animationOptions(interval=500, loop=F)),
+                       fluidRow(
+                         column(6,
+                                plotOutput("simulationUncorrected")
+                         ),
+                         column(6,
+                                plotOutput("simulationCorrected")
+                                
+                         ))
+              )
             )
   )
   )))
