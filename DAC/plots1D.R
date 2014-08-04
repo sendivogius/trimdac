@@ -1,7 +1,7 @@
 plotTrimDACchar <- function(peakForDACs){
   if(!all(is.na(peakForDACs))){
     plot(0:63, peakForDACs, xlab="DAC value", ylab="peak position [mV]", type='o', xaxt="n")
-    axis(1, at=seq(0,63,9))
+    axis(1, at=seq(0,63,4))
   }
   else
   {

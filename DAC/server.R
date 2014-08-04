@@ -25,7 +25,7 @@ if(file.exists(peaksFile)){
   #   print("calc and saved")
 }
 
-oldpar <- par(mar=c(0,0,0,0))
+oldpar <- par(mar=c(0,0,0,0), xpd=NA)
 
 
 # Define server logic required to draw a histogram
@@ -83,6 +83,17 @@ shinyServer(function(input, output, session) {
   })
   
   observe({
+    pixel <- input$detectorClicked
+    if(   !is.null(pixel)
+          && pixel$x >= 0.5 && pixel$x <= 18.5
+          && pixel$y >= 0.5 && pixel$y <= 24.5){
+      
+      updateNumericInput(session, "col", value=round(pixel$x))
+      updateNumericInput(session, "row", value=round(pixel$y))
+    }
+  })
+  
+  observe({
     pixel <- input$DACClickId
     #  print(pixel$y)
     if( !(is.null(pixel) || all(is.na(peaksForDACs())))){
@@ -117,7 +128,7 @@ shinyServer(function(input, output, session) {
   
   output$pixelDACCharacteristic <- renderPlot({
     plotTrimDACchar(peaksForDACs())
-  })
+  }, width=900)
   
   output$uncorrectedHistogram <- renderPlot({
     plotHistogram(peaks(),  rep(input$DAC+1, 432), input$bins, input$showLines)

@@ -88,18 +88,29 @@ shinyUI(fluidPage(
                          column(2)
                        ),
                        h3(textOutput("DACcharacteristicHeader"), style="text-align: center;"),
-                       plotOutput("pixelDACCharacteristic", clickId="DACClickId")             
+                       fluidRow(
+                         column(1),
+                         column(10,
+                                plotOutput("pixelDACCharacteristic", clickId="DACClickId")             
+                         ),
+                         column(1)
+                       )
+                       
               ), 
               tabPanel("Simulation",
                        h3("Overview", style="text-align: center; padding-right:200px"),
-                       sliderInput("simulationThreshold", "Thresholld: ", min=800, max=1400, value=800, width='90%', 
-                                   animate=animationOptions(interval=500, loop=F)),
+                       fluidRow(
+                         column(1, "Threshold:"),
+                         column(10,sliderInput("simulationThreshold", label="", min=800, max=1400, value=800, width='100%', 
+                                               animate=animationOptions(interval=1000, loop=F))),
+                         column(1)
+                       ),
                        fluidRow(
                          column(6,
-                                plotOutput("simulationUncorrected")
+                                plotOutput("simulationUncorrected", clickId="detectorClicked", height="500px")
                          ),
                          column(6,
-                                plotOutput("simulationCorrected")
+                                plotOutput("simulationCorrected", clickId="detectorClicked", height="500px")
                                 
                          ))
               )
