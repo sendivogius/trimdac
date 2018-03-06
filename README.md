@@ -1,7 +1,19 @@
 Repository contains simple project which displays pixel characteristic for different trimDAC thresholds. It also allows to calculate correction for given threshold.
-One can see warking application at https://tsatlawa.shinyapps.io/pixelDet/
+One can see working application at https://tsatlawa.shinyapps.io/pixelDet/
 
 ## Background
+
+In order to improve spatial resolution in hybrid pixel detectors, designed ASICs have very small pixels (50-100 μm). Manufacturing so small circuits has impact on pixel's characteristic and there exist solutions enhancing channels uniformity. One of them is to add independent trimming DAC to each pixel and therefore allow some degree of configuration. 
+
+During testing of manufactured chip, characteristic of each pixel and each trimming DAC setting can be read and later optimal trim DAC value can be chosen.
+
+
+If you are interested in pixel detectors field, I encourage you to get familiar with articles:
+* http://ieeexplore.ieee.org/document/6872148
+* http://yadda.icm.edu.pl/yadda/element/bwmeta1.element.baztech-05b1c26f-8f15-47ca-b945-b258098f62fb/c/chmot54_01.pdf
+* http://iopscience.iop.org/article/10.1088/1748-0221/9/12/C12046
+* http://www.ijet.pl/old_archives/2011/4/70.pdf
+* http://lss.fnal.gov/archive/2013/pub/fermilab-pub-13-518-ppd.pdf
 
 
 ## User interface
